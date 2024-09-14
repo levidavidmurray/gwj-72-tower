@@ -1,0 +1,114 @@
+[gd_scene load_steps=12 format=3 uid="uid://66jqp5g1uaiv"]
+
+[ext_resource type="Script" path="res://player/player.gd" id="1_cvf12"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/parallel_state.gd" id="2_gn2ro"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_l3alp"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_6oul2"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_356rk"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="6_c2oa8"]
+[ext_resource type="Script" path="res://player/target_detector.gd" id="6_rnssp"]
+[ext_resource type="Texture2D" uid="uid://5a8saxix4pvu" path="res://player/Cursor.png" id="7_1j82w"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_g5c8w"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ddffh"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7shfp"]
+radius = 30.0
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+script = ExtResource("1_cvf12")
+dash_speed = null
+max_dash_distance = null
+mouse_sensitivity = null
+camera_responsiveness = null
+vertical_angle_limit = null
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_g5c8w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ddffh")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63151, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+unique_name_in_owner = true
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_l3alp")
+
+[node name="ParallelState" type="Node" parent="StateChart"]
+script = ExtResource("2_gn2ro")
+
+[node name="MovementState" type="Node" parent="StateChart/ParallelState"]
+script = ExtResource("3_6oul2")
+initial_state = NodePath("Idle")
+
+[node name="OnIdle" type="Node" parent="StateChart/ParallelState/MovementState"]
+script = ExtResource("6_c2oa8")
+to = NodePath("../Idle")
+event = &"idle"
+delay_in_seconds = "0.0"
+
+[node name="OnDash" type="Node" parent="StateChart/ParallelState/MovementState"]
+script = ExtResource("6_c2oa8")
+to = NodePath("../Dash")
+event = &"dash"
+delay_in_seconds = "0.0"
+
+[node name="Idle" type="Node" parent="StateChart/ParallelState/MovementState"]
+script = ExtResource("4_356rk")
+
+[node name="Dash" type="Node" parent="StateChart/ParallelState/MovementState"]
+script = ExtResource("4_356rk")
+
+[node name="Fall" type="Node" parent="StateChart/ParallelState/MovementState"]
+script = ExtResource("4_356rk")
+
+[node name="TargetDetector" type="Area3D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 256
+script = ExtResource("6_rnssp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TargetDetector"]
+shape = SubResource("SphereShape3D_7shfp")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -13.0
+offset_top = -5.0
+offset_right = 15.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_1j82w")
+expand_mode = 1
+stretch_mode = 5
+
+[connection signal="state_physics_processing" from="StateChart/ParallelState/MovementState/Idle" to="." method="_on_idle_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/ParallelState/MovementState/Dash" to="." method="_on_dash_state_entered"]
+[connection signal="state_exited" from="StateChart/ParallelState/MovementState/Dash" to="." method="_on_dash_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/ParallelState/MovementState/Dash" to="." method="_on_dash_state_physics_processing"]
+[connection signal="state_processing" from="StateChart/ParallelState/MovementState/Dash" to="." method="_on_dash_state_processing"]

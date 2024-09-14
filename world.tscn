@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3 uid="uid://cbawqlcx4mbuw"]
+
+[ext_resource type="Material" uid="uid://dl1lwrd2xyob8" path="res://materials/ground.tres" id="1_gnisb"]
+[ext_resource type="PackedScene" uid="uid://66jqp5g1uaiv" path="res://player/player.tscn" id="2_exvix"]
+[ext_resource type="PackedScene" uid="uid://cvabhr7jpcoaw" path="res://scenes/dash_target/dash_target.tscn" id="3_4t80s"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_40cxb"]
+sky_top_color = Color(0.129412, 0.619608, 0.737255, 1)
+sky_horizon_color = Color(0.556863, 0.792157, 0.901961, 1)
+ground_bottom_color = Color(0.00784314, 0.188235, 0.278431, 1)
+ground_horizon_color = Color(0.556863, 0.792157, 0.901961, 1)
+
+[sub_resource type="Sky" id="Sky_x8548"]
+sky_material = SubResource("ProceduralSkyMaterial_40cxb")
+
+[sub_resource type="Environment" id="Environment_sofei"]
+background_mode = 2
+background_color = Color(0.102022, 0.110155, 0.139127, 1)
+sky = SubResource("Sky_x8548")
+ambient_light_sky_contribution = 0.3
+tonemap_mode = 2
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 0.49
+glow_strength = 1.08
+glow_bloom = 0.01
+glow_blend_mode = 0
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sofei")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.243652, 0)
+use_collision = true
+size = Vector3(100, 0.5, 100)
+material = ExtResource("1_gnisb")
+
+[node name="Player" parent="." instance=ExtResource("2_exvix")]
+
+[node name="DashTarget" parent="." instance=ExtResource("3_4t80s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61667, -8.85632)
+
+[node name="DashTarget2" parent="." instance=ExtResource("3_4t80s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.77664, 1.03324, -8.85632)
+
+[node name="DashTarget3" parent="." instance=ExtResource("3_4t80s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.38898, 1.03324, -8.85632)
+
+[node name="DashTarget4" parent="." instance=ExtResource("3_4t80s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.76432, 2.70829, -8.85632)
+
+[node name="DashTarget5" parent="." instance=ExtResource("3_4t80s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.864846, 2.09076, -8.85632)
