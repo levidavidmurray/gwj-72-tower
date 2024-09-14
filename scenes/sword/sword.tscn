@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://bkkstf00hcnxl"]
+
+[ext_resource type="PackedScene" uid="uid://e7pyq1mvw8ws" path="res://scenes/sword/sword.glb" id="1_udqs4"]
+[ext_resource type="PackedScene" uid="uid://bnc4a1xdhe43" path="res://scenes/sword/sword_blade.tscn" id="2_j288l"]
+[ext_resource type="Material" uid="uid://c6wijnqhr2ux" path="res://scenes/sword/mat_sword_hilt.tres" id="2_tqs4o"]
+[ext_resource type="Material" uid="uid://5yt02jo032kw" path="res://scenes/sword/mat_sword_handle.tres" id="3_6qv0r"]
+
+[node name="Sword" instance=ExtResource("1_udqs4")]
+
+[node name="Sword" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_tqs4o")
+surface_material_override/1 = ExtResource("3_6qv0r")
+
+[node name="BladePosition" type="Node3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.154248, 0)
+
+[node name="SwordBlade" parent="BladePosition" index="0" instance=ExtResource("2_j288l")]

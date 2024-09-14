@@ -1,13 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://66jqp5g1uaiv"]
+[gd_scene load_steps=15 format=3 uid="uid://66jqp5g1uaiv"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_cvf12"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/parallel_state.gd" id="2_gn2ro"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_l3alp"]
+[ext_resource type="PackedScene" uid="uid://cjkqhdwvyllul" path="res://player/arms_rig.tscn" id="2_y31nd"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_6oul2"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_356rk"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="6_c2oa8"]
 [ext_resource type="Script" path="res://player/target_detector.gd" id="6_rnssp"]
 [ext_resource type="Texture2D" uid="uid://5a8saxix4pvu" path="res://player/Cursor.png" id="7_1j82w"]
+[ext_resource type="AudioStream" uid="uid://cmog23f8ioiu7" path="res://player/sfx/sword-slice.wav" id="10_t776p"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g5c8w"]
 
@@ -16,14 +18,14 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_7shfp"]
 radius = 30.0
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_upevf"]
+random_pitch = 1.05
+streams_count = 1
+stream_0/stream = ExtResource("10_t776p")
+
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
 script = ExtResource("1_cvf12")
-dash_speed = null
-max_dash_distance = null
-mouse_sensitivity = null
-camera_responsiveness = null
-vertical_angle_limit = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -39,6 +41,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63151, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
 unique_name_in_owner = true
+
+[node name="ArmsRig" parent="Head/Camera3D" instance=ExtResource("2_y31nd")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0413415, -1.81469, 0.211246)
 
 [node name="StateChart" type="Node" parent="."]
 script = ExtResource("2_l3alp")
@@ -106,6 +112,9 @@ grow_vertical = 2
 texture = ExtResource("7_1j82w")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="SFX_SwordSlice" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_upevf")
 
 [connection signal="state_physics_processing" from="StateChart/ParallelState/MovementState/Idle" to="." method="_on_idle_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/ParallelState/MovementState/Dash" to="." method="_on_dash_state_entered"]

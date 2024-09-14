@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnc4a1xdhe43"]
+
+[ext_resource type="PackedScene" uid="uid://b51w13xh3en2c" path="res://scenes/sword/sword_blade.glb" id="1_i7yk6"]
+[ext_resource type="Material" uid="uid://5lqifq5361gs" path="res://scenes/sword/mat_sword_blade.tres" id="2_33akf"]
+
+[node name="SwordBlade" instance=ExtResource("1_i7yk6")]
+
+[node name="SwordBlade" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_33akf")

@@ -15,8 +15,11 @@ const JUMP_VELOCITY = 4.5
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = %Camera3D
+@onready var arms_rig: ArmsRig = %ArmsRig
 @onready var target_detector: TargetDetector = %TargetDetector
 @onready var state_chart: StateChart = $StateChart
+# SFX
+@onready var sfx_sword_slice: AudioStreamPlayer3D = $SFX_SwordSlice
 
 var current_target: DashTarget
 var dash_target: DashTarget
@@ -34,6 +37,7 @@ var slow_enter_time: float
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	arms_rig.anim_player.play("SwordIdle")
 
 
 func _input(event: InputEvent):
@@ -44,11 +48,13 @@ func _input(event: InputEvent):
 		var angle_limit = deg_to_rad(vertical_angle_limit)
 		rotation.x = clamp(rotation.x, -angle_limit, angle_limit)
 	if event.is_action_pressed("primary_action"):
-		if current_target:
-			var target_dir = (current_target.global_position - camera.global_position).normalized()
-			var t_dot = (-camera.global_basis.z).dot(target_dir)
-			dash(current_target)
-			print("target: %s, dot: %s" % [current_target.name, t_dot])
+		# if current_target:
+		# 	var target_dir = (current_target.global_position - camera.global_position).normalized()
+		# 	var t_dot = (-camera.global_basis.z).dot(target_dir)
+		# 	dash(current_target)
+		# 	print("target: %s, dot: %s" % [current_target.name, t_dot])
+		arms_rig.anim_player.play("SwordSlash_LeftToRight")
+		sfx_sword_slice.play()
 	if event.is_action_pressed("secondary_action"):
 		Engine.time_scale = 0.25
 	elif event.is_action_released("secondary_action"):
